@@ -30,7 +30,7 @@ public class WebhookController : ControllerBase
                 throw new Exception("could not parse publisher payload");
             }
 
-            Console.WriteLine(publisherPayload);
+            Console.WriteLine(decrypted);
 
             // TODO
             // Here goes your piece of code that is responsible for handling player update balance requests coming from appcharge systems
