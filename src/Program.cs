@@ -25,6 +25,10 @@ builder.Services.AddScoped<IAESDecryptorService, AESDecryptorService>(provider =
 
 var app = builder.Build();
 
+// global error handler
+app.UseMiddleware<ErrorHandlerMiddleware>();
+
+
 app.MapControllers();
 
 app.Run();
