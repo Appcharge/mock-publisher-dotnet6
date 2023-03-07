@@ -39,7 +39,7 @@ public class AESDecryptorService : IAESDecryptorService
             }
             
         } catch(Exception ex) {
-            throw new Exception("Failed to decrypt data");
+            throw new Exception("Failed to decrypt data", ex);
         }        
     }
 
