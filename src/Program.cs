@@ -29,6 +29,9 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IAESDecryptorService, AESDecryptorService>(provider => {
     return new AESDecryptorService(iv, key);
 });
+builder.Services.AddScoped<ISignatureHashingService, SignatureHashingService>(provider => {
+    return new SignatureHashingService(key);
+});
 builder.Services.AddScoped<ISecretsService, SecretsService>(provider => {
     return new SecretsService(facebookAppSecret);
 });

@@ -11,16 +11,27 @@ public class DecryptionMiddleware
         _next = next;
     }
 
-    public async Task Invoke(HttpContext context, IAESDecryptorService aesDecryptor)
+    public async Task Invoke(HttpContext context, IAESDecryptorService aesDecryptor, ISignatureHashingService signatureHashingService)
     {
         try
         {
             var originalBody = context.Request.Body;
             using var reader = new StreamReader(originalBody);
             var requestBody = await reader.ReadToEndAsync();
-            var decrypted = aesDecryptor.Decrypt(requestBody);
-            var requestBodyBytes = Encoding.UTF8.GetBytes(decrypted);
-            context.Request.Body = new MemoryStream(requestBodyBytes);
+
+            if (context.Request.Headers.Keys.Contains("Authorization"))
+            {
+                var serializedJson = JsonSerializer.Serialize(JsonSerializer.Deserialize<object>(requestBody));
+                signatureHashingService.SignPayload(context.Request.Headers["Authorization"], serializedJson);
+                var requestBodyBytes = Encoding.UTF8.GetBytes(requestBody);
+                context.Request.Body = new MemoryStream(requestBodyBytes);
+            }
+            else
+            {
+                var decrypted = aesDecryptor.Decrypt(requestBody);
+                var requestBodyBytes = Encoding.UTF8.GetBytes(decrypted);
+                context.Request.Body = new MemoryStream(requestBodyBytes);
+            }
 
             await _next(context);
         }
