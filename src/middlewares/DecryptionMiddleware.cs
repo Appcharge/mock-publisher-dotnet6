@@ -19,10 +19,10 @@ public class DecryptionMiddleware
             using var reader = new StreamReader(originalBody);
             var requestBody = await reader.ReadToEndAsync();
 
-            if (context.Request.Headers.Keys.Contains("Authorization"))
+            if (context.Request.Headers.Keys.Contains("Signature"))
             {
                 var serializedJson = JsonSerializer.Serialize(JsonSerializer.Deserialize<object>(requestBody));
-                signatureHashingService.SignPayload(context.Request.Headers["Authorization"], serializedJson);
+                signatureHashingService.SignPayload(context.Request.Headers["Signature"], serializedJson);
                 var requestBodyBytes = Encoding.UTF8.GetBytes(requestBody);
                 context.Request.Body = new MemoryStream(requestBodyBytes);
             }
