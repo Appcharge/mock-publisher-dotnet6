@@ -22,7 +22,11 @@ public class DecryptionMiddleware
             if (context.Request.Headers.Keys.Contains("Signature"))
             {
                 var serializedJson = JsonSerializer.Serialize(JsonSerializer.Deserialize<object>(requestBody));
-                signatureHashingService.SignPayload(context.Request.Headers["Signature"], serializedJson);
+                var (signature, expectedSignature) = signatureHashingService.SignPayload(context.Request.Headers["Signature"], serializedJson);
+                if (!signature.Equals(expectedSignature))
+                {
+                    throw new Exception("Signatures doesn't match");
+                }
                 var requestBodyBytes = Encoding.UTF8.GetBytes(requestBody);
                 context.Request.Body = new MemoryStream(requestBodyBytes);
             }

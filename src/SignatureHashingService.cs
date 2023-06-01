@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json;
 
 public interface ISignatureHashingService {
-    void SignPayload(string expectedSignature, string data);
+    (string signature, string expectedSignature) SignPayload(string expectedSignature, string data);
 }
 
 record Signature
@@ -40,7 +40,7 @@ public class SignatureHashingService : ISignatureHashingService
         return new Signature { T = t, V1 = v1 };
     }
 
-    public void SignPayload(string expectedSignatureHeader, string data)
+    public (string signature, string expectedSignature) SignPayload(string expectedSignatureHeader, string data)
     {
         var expectedSignature = ParseSignature(expectedSignatureHeader);
         byte[] dataBytes = Encoding.UTF8.GetBytes($"{expectedSignature.T}.{data}");
@@ -48,11 +48,7 @@ public class SignatureHashingService : ISignatureHashingService
         using var hmac = new HMACSHA256(_key);
         byte[] hmacBytes = hmac.ComputeHash(dataBytes);
         var signature = BitConverter.ToString(hmacBytes).Replace("-", "").ToLower();
-
-        if (!signature.Equals(expectedSignature.V1))
-        {
-            throw new Exception("Signatures doesn't match");
-        }
+        return (signature, expectedSignature.V1);
     }
 }
 

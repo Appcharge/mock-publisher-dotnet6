@@ -18,7 +18,6 @@ public class PublisherPayload
     public DateTime purchaseDateAndTimeUtc { get; set; } = default!;
     public string gameId { get; set; } = default!;
     public string playerId { get; set; } = default!;
-    public string authType { get; set; } = default!;
     public string bundleName { get; set; } = default!;
     public string bundleId { get; set; } = default!;
     public string sku { get; set; } = default!;
