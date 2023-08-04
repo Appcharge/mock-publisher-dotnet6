@@ -6,11 +6,9 @@ using System.Text.Json;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 { 
-    private readonly IAESDecryptorService _aesDecryptor;
     private readonly ISecretsService _secretsService;
 
-    public AuthController(IAESDecryptorService aesDecryptor, ISecretsService secretsService) {
-        _aesDecryptor = aesDecryptor;
+    public AuthController(ISecretsService secretsService) {
         _secretsService = secretsService;
     }
 

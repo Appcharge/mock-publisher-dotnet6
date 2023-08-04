@@ -11,7 +11,7 @@ public class DecryptionMiddleware
         _next = next;
     }
 
-    public async Task Invoke(HttpContext context, IAESDecryptorService aesDecryptor, ISignatureHashingService signatureHashingService)
+    public async Task Invoke(HttpContext context, ISignatureHashingService signatureHashingService)
     {
         try
         {
@@ -19,23 +19,14 @@ public class DecryptionMiddleware
             using var reader = new StreamReader(originalBody);
             var requestBody = await reader.ReadToEndAsync();
 
-            if (context.Request.Headers.Keys.Contains("Signature"))
+            var serializedJson = JsonSerializer.Serialize(JsonSerializer.Deserialize<object>(requestBody));
+            var (signature, expectedSignature) = signatureHashingService.SignPayload(context.Request.Headers["signature"], serializedJson);
+            if (!signature.Equals(expectedSignature))
             {
-                var serializedJson = JsonSerializer.Serialize(JsonSerializer.Deserialize<object>(requestBody));
-                var (signature, expectedSignature) = signatureHashingService.SignPayload(context.Request.Headers["Signature"], serializedJson);
-                if (!signature.Equals(expectedSignature))
-                {
-                    throw new Exception("Signatures doesn't match");
-                }
-                var requestBodyBytes = Encoding.UTF8.GetBytes(requestBody);
-                context.Request.Body = new MemoryStream(requestBodyBytes);
+                throw new Exception("Signatures doesn't match");
             }
-            else
-            {
-                var decrypted = aesDecryptor.Decrypt(requestBody);
-                var requestBodyBytes = Encoding.UTF8.GetBytes(decrypted);
-                context.Request.Body = new MemoryStream(requestBodyBytes);
-            }
+            var requestBodyBytes = Encoding.UTF8.GetBytes(requestBody);
+            context.Request.Body = new MemoryStream(requestBodyBytes);
 
             await _next(context);
         }
