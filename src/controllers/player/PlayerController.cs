@@ -11,13 +11,7 @@ public class PlayerUpdateBalanceResponse {
 [ApiController]
 [Route("[controller]")]
 public class PlayerController : ControllerBase
-{ 
-    private readonly IAESDecryptorService _aesDecryptor;
-
-    public PlayerController(IAESDecryptorService aesDecryptor) {
-        _aesDecryptor = aesDecryptor;
-    }
-
+{
     [HttpPost]
     [Route("/updateBalance")]
     public async Task<PlayerUpdateBalanceResponse> PlayerUpdateBalanceEndpoint()

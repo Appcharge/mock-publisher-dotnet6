@@ -12,12 +12,6 @@ public class Product
     public string name { get; set; } = default!;
 }
 
-public class Price
-{
-    public float subTotal { get; set; } = default!;
-    public float tax { get; set; } = default!;
-}
-
 public class PublisherPayload
 {
     public string appChargePaymentId { get; set; } = default!;
@@ -30,9 +24,9 @@ public class PublisherPayload
     public int priceInCents { get; set; } = default!;
     public string currency { get; set; } = default!;
     public float priceInDollar { get; set; } = default!;
-    public Price price { get; set; } = default!;
     public string action { get; set; } = default!;
     public string actionStatus { get; set; } = default!;
     public List<Product> products { get; set; } = default!;
-    public string publisherToken { get; set; } = default!;
+    public Double tax { get; set; } = default!;
+    public Double subTotal { get; set; } = default!;
 }
