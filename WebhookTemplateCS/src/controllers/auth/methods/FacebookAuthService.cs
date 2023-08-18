@@ -1,12 +1,10 @@
-using System;
-using System.Net.Http;
-using System.Text.Json;
 using Newtonsoft.Json;
 
+namespace WebhookTemplateCS.controllers.auth.methods;
 
-class FacebookAuth {
+public class FacebookAuthService: IFacebookAuthService {
     
-    public static AuthResult authenticate(string appId, string token, string appSecret)
+    public AuthResult Authenticate(string appId, string token, string appSecret)
     {
         string url = $"https://graph.facebook.com/debug_token?input_token={token}&access_token={appId}|{appSecret}";
 

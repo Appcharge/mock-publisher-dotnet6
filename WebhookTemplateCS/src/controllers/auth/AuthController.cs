@@ -1,5 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using System.Threading.Tasks;
+using WebhookTemplateCS.controllers.auth.methods;
 
 
 [ApiController]
@@ -7,9 +12,12 @@ using System.Text.Json;
 public class AuthController : ControllerBase
 { 
     private readonly ISecretsService _secretsService;
+    private readonly IFacebookAuthService _facebookAuthService;
 
-    public AuthController(ISecretsService secretsService) {
+    public AuthController(ISecretsService secretsService, IFacebookAuthService facebookAuthService)
+    {
         _secretsService = secretsService;
+        _facebookAuthService = facebookAuthService;
     }
 
     [HttpPost]
@@ -34,7 +42,7 @@ public class AuthController : ControllerBase
         switch(authMethod)
         {
             case "facebook":
-                authResult = FacebookAuth.authenticate(authRequest.AppId, authRequest.Token, _secretsService.getFacebookSecret());
+                authResult = _facebookAuthService.Authenticate(authRequest.AppId, authRequest.Token, _secretsService.getFacebookSecret());
                 break;
             default:
                 Console.WriteLine($"unknown authentication method {authMethod}");

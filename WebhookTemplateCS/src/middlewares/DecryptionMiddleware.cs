@@ -1,6 +1,10 @@
+using System;
+using System.IO;
 using System.Net;
 using System.Text.Json;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 public class DecryptionMiddleware
 {
