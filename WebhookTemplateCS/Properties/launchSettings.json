@@ -11,9 +11,12 @@
     "WebhookTemplateCS": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "applicationUrl": "https://localhost:7273;http://localhost:5201",
       "environmentVariables": {
+        "AWARD_PUBLISHER_URL": "https://4ugzy6iuph.execute-api.us-east-1.amazonaws.com/prod/src/publisher-award-mock.ts",
+        "REPORTING_API_URL": "https://api-staging.appcharge.com",
+        "ASSET_UPLOAD_GATEWAY_URL": "https://api-staging.appcharge.com",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
