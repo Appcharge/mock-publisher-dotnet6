@@ -13,7 +13,7 @@ public class HealthResponse {
 public class HealthController : ControllerBase
 {
     [HttpGet]
-    [Route("/mocker//health")]
+    [Route("/mocker/health")]
     public async Task<HealthResponse> HealthEndpoint()
     {
         return new HealthResponse {
