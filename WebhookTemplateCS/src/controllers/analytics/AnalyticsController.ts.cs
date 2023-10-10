@@ -16,7 +16,7 @@ public class AnalyticsController : ControllerBase
     {
         Configuration = configuration;
     }
-    
+
     [HttpPost]
     [Route("/mocker/analytics")]
     public async Task<object> GetAnalyticsEndpoint([FromBody] GetAnalyticsRequest content)
@@ -24,11 +24,11 @@ public class AnalyticsController : ControllerBase
         string jsonString = JsonSerializer.Serialize(content);
         var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
         var signatureHashingService = new SignatureHashingService(Configuration["KEY"]);
-        
+
         HttpClient httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Add("signature", signatureHashingService.CreateSignature(jsonString));
         httpClient.DefaultRequestHeaders.Add("x-publisher-token", Configuration["PUBLISHER_TOKEN"]);
-        
+
         HttpResponseMessage response = await httpClient.PostAsync(
             $"{Configuration["REPORTING_API_URL"]}/reporting/reports/analytics/",
             httpContent
