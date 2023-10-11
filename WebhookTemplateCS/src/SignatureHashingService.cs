@@ -4,6 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Moq;
 
 public interface ISignatureHashingService {
     (string signature, string expectedSignature) SignPayload(string expectedSignature, string data);
@@ -49,6 +50,17 @@ public class SignatureHashingService : ISignatureHashingService
         byte[] hmacBytes = hmac.ComputeHash(dataBytes);
         var signature = BitConverter.ToString(hmacBytes).Replace("-", "").ToLower();
         return (signature, expectedSignature.V1);
+    }
+    
+    public string CreateSignature(object requestBody)
+    {
+        var timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        byte[] dataBytes = Encoding.UTF8.GetBytes($"{timeStamp}.{requestBody}");
+
+        using var hmac = new HMACSHA256(_key);
+        byte[] hmacBytes = hmac.ComputeHash(dataBytes);
+        var signature = BitConverter.ToString(hmacBytes).Replace("-", "").ToLower();
+        return $"t={timeStamp},v1={signature}";
     }
 }
 
